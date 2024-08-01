@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbenazza <hbenazza@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkoulal <tkoulal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 21:46:50 by hbenazza          #+#    #+#             */
-/*   Updated: 2024/07/31 23:50:14 by hbenazza         ###   ########.fr       */
+/*   Updated: 2024/08/01 21:21:14 by tkoulal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ void	ctrl_c_her(int signal)
 		exit(130);
 }
 
-void	ctrl_d_her(void)
-{
-	g_exit_status = 0;
-	write(1, "minishell: you have exited without specifying a delimeter\n", 58);
-	exit(g_exit_status);
-}
+// void	ctrl_d_her(void)
+// {
+// 	g_exit_status = 0;
+// 	write(1, "minishell: you have exited without specifying a delimeter\n", 58);
+// 	exit(g_exit_status);
+// }
 
 void	cntl_d(t_shell *sh, t_env *env, t_env *envp)
 {

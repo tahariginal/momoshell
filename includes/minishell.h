@@ -6,7 +6,7 @@
 /*   By: tkoulal <tkoulal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 22:46:09 by hbenazza          #+#    #+#             */
-/*   Updated: 2024/08/01 10:18:09 by tkoulal          ###   ########.fr       */
+/*   Updated: 2024/08/01 16:48:45 by tkoulal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void		ctrl_d_her(void);
 
 /*----------herdoc--------*/
 int 	handle_herdoc(t_shell *cmds);
-void	unlick_files(t_shell *shell_tmp, t_redirect *red_tmp, char *hername);
+void	unlick_files(t_shell *shell_tmp);
 void	ctrl_c_her(int signal);
 /*------------------------*/
 

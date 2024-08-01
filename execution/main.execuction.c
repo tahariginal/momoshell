@@ -6,7 +6,7 @@
 /*   By: tkoulal <tkoulal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 11:05:33 by tkoulal           #+#    #+#             */
-/*   Updated: 2024/08/01 10:25:00 by tkoulal          ###   ########.fr       */
+/*   Updated: 2024/08/01 22:45:19 by tkoulal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,15 @@ int	run_exec(t_shell *cmds)
 int	execution(t_shell *cmds)
 {
 	t_shell	*tmp;
+	t_redirect	*tmp_red;
 
 	tmp = cmds;
 	tmp->pid = 0;
 	g_exit_status = 0;
 	cmds->size = cmds_size(cmds);
+	handle_herdoc(cmds);
 	signals();
 	set_hold(cmds);
-	if (cmds->redirection)
-		handle_herdoc(cmds);
 	if (cmds->next == NULL && !is_built_in(cmds) && !cmds->redirection)
 	{
 		if_built_in_run(cmds);
@@ -69,7 +69,19 @@ int	execution(t_shell *cmds)
 	}
 	else if (run_exec(cmds) == ERROR)
 		return (ERROR);
-	if (tmp->redirection)
-		unlick_files(tmp, tmp->redirection, tmp->redirection->herdoc_name);
+	
+	while (tmp && tmp->redirection)
+	{
+		tmp_red = tmp->redirection;
+		while (tmp_red)
+		{
+			if (tmp_red->type == 13)
+			{
+				unlink(tmp_red->herdoc_name);
+			}
+			tmp_red = tmp_red->next;
+		}	
+		tmp = tmp->next;
+	}
 	return (0);
 }

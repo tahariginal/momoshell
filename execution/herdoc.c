@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   herdoc.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbenazza <hbenazza@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tkoulal <tkoulal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:36:45 by tkoulal           #+#    #+#             */
-/*   Updated: 2024/07/31 23:49:46 by hbenazza         ###   ########.fr       */
+/*   Updated: 2024/08/01 22:42:58 by tkoulal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char *expand_heredoc(char *line)
     return (new_line);
 }
 
-int    break_if_there_is_a_del(int *flag, char *line, t_redirect *red_tmp)
+int    free_if_there_is_a_del(int *flag, char *line, t_redirect *red_tmp)
 {
     (void)flag;
     if (!ft_strncmp(line, red_tmp->file_name))
@@ -83,21 +83,21 @@ void    reading_promp_her(int *fd, t_redirect *red_tmp)
     int flag;
 
     flag = 0;
+    line = NULL;
     *fd = open(red_tmp->herdoc_name, O_RDWR | O_CREAT | O_TRUNC, 0644);
-    while (42)
+    while (1)
     {
-        line = readline(">");
+        line = readline("~> ");
         if (!line)
         {
-            ctrl_d_her();
-            return ;
+            return;
         }
         if (ft_strchr(line, '$'))
         {
             line = expand_heredoc(line);
             flag = 1;
         }
-        if (break_if_there_is_a_del(&flag, line, red_tmp) == 0)
+        if (free_if_there_is_a_del(&flag, line, red_tmp) == 0)
             break ;
         write(*fd, line, ft_strlen(line));
         write(*fd, "\n", 1);
@@ -111,6 +111,7 @@ void    open_herdoc(t_shell *cmds)
     t_shell *node;
     t_redirect *red_tmp;
     int fd;
+    int save_fd = dup(STDIN_FILENO);
 
     pid = fork();
     if (!pid)
@@ -119,24 +120,27 @@ void    open_herdoc(t_shell *cmds)
         red_tmp = cmds->redirection;
         while (node)
         {
-            signal(SIGINT, ctrl_c_her);
             red_tmp = node->redirection;
             while (red_tmp)
             {
                 if (red_tmp->type == HERDOC)
+                {
                     reading_promp_her(&fd, red_tmp);
+                }
                 red_tmp = red_tmp->next;
                 close(fd);
             }
             node = node->next;
         }
+        dup2(save_fd, STDIN_FILENO);
         exit(0);
     }
     waitpid(pid, NULL, 0);
 }
-void    unlick_files(t_shell *shell_tmp, t_redirect *red_tmp, char *hername)
+
+void    unlick_files(t_shell *shell_tmp)
 {
-    while (shell_tmp && red_tmp && hername)
+    while (shell_tmp && shell_tmp->redirection)
     {
         unlink(shell_tmp->redirection->herdoc_name);
         shell_tmp = shell_tmp->next;
@@ -170,7 +174,9 @@ int handle_herdoc(t_shell *cmds)
         while (red_tmp)
         {
             if (red_tmp->type == HERDOC)
+            {
                 red_tmp->herdoc_name = generate_name(i);
+            }
             red_tmp = red_tmp->next;
         }
         i++;

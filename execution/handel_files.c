@@ -6,7 +6,7 @@
 /*   By: tkoulal <tkoulal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 13:55:13 by tkoulal           #+#    #+#             */
-/*   Updated: 2024/08/01 12:04:29 by tkoulal          ###   ########.fr       */
+/*   Updated: 2024/08/01 12:13:35 by tkoulal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ int	print_error(int error_id, char *file_name)
 	}
 	if (error_id == 2)
 	{
+		g_exit_status = 1;
 		printf("minishell: %s: Permission denied\n", file_name);
 		return (error_id);
 	}
@@ -71,8 +72,14 @@ int	print_error(int error_id, char *file_name)
 int open_outfiles(t_shell *node, t_redirect *tmp_red)
 {
 	int status;
+	int	flag ;
 
-	status = open(tmp_red->file_name, O_WRONLY | O_TRUNC | O_CREAT , 0644);
+	if (tmp_red->type == 4)
+		flag = O_TRUNC;
+	else if (tmp_red->type == 11)
+		flag = O_APPEND;
+	flag = O_WRONLY | O_CREAT;
+	status = open(tmp_red->file_name, flag , 0644);
 	if (status < 0)
 	{
 		status = access(tmp_red->file_name, F_OK);
