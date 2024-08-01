@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   herdoc.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoulal <tkoulal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hbenazza <hbenazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:36:45 by tkoulal           #+#    #+#             */
-/*   Updated: 2024/07/31 18:52:06 by tkoulal          ###   ########.fr       */
+/*   Updated: 2024/07/31 23:49:46 by hbenazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char *expand_heredoc(char *line)
     int len;
     char *new_line;
     char *temp;
-    
+
     i = 0;
     len = len_of_env(line);
     new_line = malloc(len + 1);
@@ -68,10 +68,10 @@ char *expand_heredoc(char *line)
 
 int    break_if_there_is_a_del(int *flag, char *line, t_redirect *red_tmp)
 {
+    (void)flag;
     if (!ft_strncmp(line, red_tmp->file_name))
     {
-        if (*flag == 0)
-            free(line);
+        free(line);
         return (0);
     }
     return (1);
@@ -81,7 +81,6 @@ void    reading_promp_her(int *fd, t_redirect *red_tmp)
 {
     char *line;
     int flag;
-    
 
     flag = 0;
     *fd = open(red_tmp->herdoc_name, O_RDWR | O_CREAT | O_TRUNC, 0644);
@@ -89,19 +88,21 @@ void    reading_promp_her(int *fd, t_redirect *red_tmp)
     {
         line = readline(">");
         if (!line)
-            return;
+        {
+            ctrl_d_her();
+            return ;
+        }
         if (ft_strchr(line, '$'))
         {
             line = expand_heredoc(line);
             flag = 1;
         }
         if (break_if_there_is_a_del(&flag, line, red_tmp) == 0)
-            break;
+            break ;
         write(*fd, line, ft_strlen(line));
         write(*fd, "\n", 1);
         if (flag == 0)
             free(line);
-        flag = 1;
     }
 }
 void    open_herdoc(t_shell *cmds)
@@ -118,6 +119,7 @@ void    open_herdoc(t_shell *cmds)
         red_tmp = cmds->redirection;
         while (node)
         {
+            signal(SIGINT, ctrl_c_her);
             red_tmp = node->redirection;
             while (red_tmp)
             {

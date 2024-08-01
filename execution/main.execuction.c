@@ -6,7 +6,7 @@
 /*   By: tkoulal <tkoulal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 11:05:33 by tkoulal           #+#    #+#             */
-/*   Updated: 2024/07/31 18:52:33 by tkoulal          ###   ########.fr       */
+/*   Updated: 2024/08/01 10:25:00 by tkoulal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ int	run_exec(t_shell *cmds)
 	int status;
 	int	i;
 
-	cmds->size = cmds_size(cmds);
 	tmp = cmds;
 	status = 0;
 	i = -1;
@@ -58,11 +57,14 @@ int	execution(t_shell *cmds)
 	tmp = cmds;
 	tmp->pid = 0;
 	g_exit_status = 0;
+	cmds->size = cmds_size(cmds);
+	signals();
+	set_hold(cmds);
 	if (cmds->redirection)
 		handle_herdoc(cmds);
 	if (cmds->next == NULL && !is_built_in(cmds) && !cmds->redirection)
 	{
-		if_built_in_run(cmds); // exec builtin
+		if_built_in_run(cmds);
 		return (0);
 	}
 	else if (run_exec(cmds) == ERROR)

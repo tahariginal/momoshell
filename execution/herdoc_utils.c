@@ -6,9 +6,10 @@
 /*   By: tkoulal <tkoulal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:47:39 by tkoulal           #+#    #+#             */
-/*   Updated: 2024/07/30 14:04:25 by tkoulal          ###   ########.fr       */
+/*   Updated: 2024/07/31 22:41:12 by tkoulal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+//test

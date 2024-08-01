@@ -6,7 +6,7 @@
 /*   By: hbenazza <hbenazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 20:02:56 by hbenazza          #+#    #+#             */
-/*   Updated: 2024/07/27 22:49:57 by hbenazza         ###   ########.fr       */
+/*   Updated: 2024/07/30 23:50:23 by hbenazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,22 @@ int	ft_unset(t_shell *sh)
 
 int	ft_exit(t_shell *shell)
 {
+	int	i;
+
+	i = 0;
+	if (shell->cmd[1])
+	{
+		while (shell->cmd[1])
+		{
+			if (shell->cmd[1][i] < '0' || shell->cmd[1][i] > '9')
+			{
+				write(2, "minishell: invalid argument, takes only integers\n", 49);
+				exit(2);
+			}
+			i++;
+		}
+		g_exit_status = ft_atoi(shell->cmd[1]);
+	}
 	clean_up(shell, 1);
 	write(1, "exit\n", 5);
 	exit(g_exit_status);

@@ -6,7 +6,7 @@
 /*   By: tkoulal <tkoulal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 22:46:09 by hbenazza          #+#    #+#             */
-/*   Updated: 2024/07/31 18:50:12 by tkoulal          ###   ########.fr       */
+/*   Updated: 2024/08/01 10:18:09 by tkoulal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,15 +121,17 @@ void		signal01();
 void		signals();
 void		cntl_d(t_shell *sh, t_env *env, t_env *envp);
 void		ctrl_c(int signal);
+void		ctrl_d_her(void);
 /*------------------------*/
 
 /*----------herdoc--------*/
 int 	handle_herdoc(t_shell *cmds);
-void    unlick_files(t_shell *shell_tmp, t_redirect *red_tmp, char *hername);
-
+void	unlick_files(t_shell *shell_tmp, t_redirect *red_tmp, char *hername);
+void	ctrl_c_her(int signal);
 /*------------------------*/
 
 /*--------excution--------*/
+void		set_hold(t_shell *node);
 int			execute(t_shell *node);
 int			open_pipes(t_shell *node, int pipe_fd[2]);
 void		ft_dup2(t_shell *node);
@@ -226,6 +228,7 @@ int			ft_atoi(const char *s);
 int			find_next_command(t_token *token, int index);
 char		*ft_strjoin_no_free(char *s1, char *s2);
 char		*checking(char const *s1, char const *s2);
+int		ft_atoi(const char *str);
 /*------------------------*/
 
 #endif

@@ -6,7 +6,7 @@
 #    By: tkoulal <tkoulal@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/20 17:57:32 by hbenazza          #+#    #+#              #
-#    Updated: 2024/07/31 18:23:07 by tkoulal          ###   ########.fr        #
+#    Updated: 2024/08/01 10:42:21 by tkoulal          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -58,7 +58,7 @@ SRC = ./program/main.c\
 
 OBJ = ${SRC:.c=.o}
 
-CFLAGS = -Wall -Werror -Wextra -g3 #-fsanitize=address
+CFLAGS = -Wall -Werror -Wextra -g3 -fsanitize=address
 
 %.o: %.c
 	cc $(CFLAGS) -c -o $@ $^

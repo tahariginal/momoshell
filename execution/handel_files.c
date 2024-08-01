@@ -6,7 +6,7 @@
 /*   By: tkoulal <tkoulal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 13:55:13 by tkoulal           #+#    #+#             */
-/*   Updated: 2024/07/31 18:29:35 by tkoulal          ###   ########.fr       */
+/*   Updated: 2024/08/01 12:04:29 by tkoulal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,39 +53,36 @@ int	open_infiles(t_shell *node, t_redirect *file)
 	node->infile = status;
 	return (SUCCESS);
 }
-
-int open_outfiles(t_shell *node)
+int	print_error(int error_id, char *file_name)
 {
-	t_redirect	*tmp;
-    int status;
-    int flags;
-
-    status = 0;
-    flags = 0;
-	tmp = node->redirection;
-	while (tmp)
+	if (error_id == 1)
 	{
-		if (tmp->type == 4)
-			flags = O_TRUNC;
-		else if (tmp->type == 11)
-			flags = O_APPEND;
-		flags = O_WRONLY | O_CREAT;
-		status = open(tmp->file_name, flags, 0644);
-		if (status < 0)
-		{
-			if (access(tmp->file_name, F_OK) == -1)
-			{
-				perror(tmp->file_name);
-				g_exit_status = 20;
-				return (close(status), g_exit_status);
-			}
-		}
-		if (node->outfile != STDOUT_FILENO)
-			close(node->outfile);
-		node->outfile = status;
-		tmp = tmp->next;
+		printf("minishell: %s: No such file or directory\n", file_name);
+		return (error_id);
 	}
-    return (status);
+	if (error_id == 2)
+	{
+		printf("minishell: %s: Permission denied\n", file_name);
+		return (error_id);
+	}
+	return (SUCCESS);
+}
+
+int open_outfiles(t_shell *node, t_redirect *tmp_red)
+{
+	int status;
+
+	status = open(tmp_red->file_name, O_WRONLY | O_TRUNC | O_CREAT , 0644);
+	if (status < 0)
+	{
+		status = access(tmp_red->file_name, F_OK);
+		if (status == -1)
+			return (print_error(1, tmp_red->file_name));
+		else
+			return (print_error(2, tmp_red->file_name));		
+	}
+	node->outfile = status;
+	return (SUCCESS);
 }
 
 int	check_is_valid_redirection(t_redirect *tmp_red)
@@ -103,17 +100,15 @@ int	check_is_valid_redirection(t_redirect *tmp_red)
 int handel_redirection(t_shell *node)
 {
     t_redirect *tmp_red;
-	t_shell		*node_tmp;
 
     tmp_red = node->redirection;
-	node_tmp = node;
 	if (check_is_valid_redirection(tmp_red))
 		return (g_exit_status);
     while (tmp_red)
     {
         if (tmp_red->type == RED_OUT || tmp_red->type == APPEND) // >
         {
-            if (open_outfiles(node) < 0)
+            if (open_outfiles(node, tmp_red) < 0)
                 return (ERROR);
         }
         else if (tmp_red->type == RED_IN ||  tmp_red->type == HERDOC)// <
